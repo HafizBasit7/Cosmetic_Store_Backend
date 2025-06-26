@@ -29,7 +29,8 @@ const addProduct = async (req, res) => {
 // Get all products (optional: filter by category)
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate('categoryId', 'name');
+    const products = await Product.find().populate('categoryId', 'name')
+
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch products', error: err.message });
