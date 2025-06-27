@@ -37,6 +37,17 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+
+const getAllProducts_User_Page = async (req, res) => {
+  try {
+    const products = await Product.find().populate('categoryId', 'name')
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch products', error: err.message });
+  }
+};
+
 // Update a product
 const updateProduct = async (req, res) => {
   try {
@@ -74,5 +85,6 @@ module.exports = {
   addProduct,
   getAllProducts,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getAllProducts_User_Page
 };

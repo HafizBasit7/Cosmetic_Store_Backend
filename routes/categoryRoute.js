@@ -7,11 +7,13 @@ const {
   getAllCategories,
   addCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getAllCategories_UserPage
 } = require('../controllers/categoryController');
 
 // Routes
 categoryRouter.get('/getAllCategories', auth, getAllCategories);
+categoryRouter.get('/getAllCategories_UserPage', getAllCategories_UserPage);
 categoryRouter.post('/addCategory', auth, addCategory);
 categoryRouter.patch('/updateCategory/:id', auth, updateCategory);
 //categoryRouter.delete('/deleteCategoty/:id', auth, deleteCategory);

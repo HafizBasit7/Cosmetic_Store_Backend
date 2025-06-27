@@ -10,6 +10,16 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+const getAllCategories_UserPage = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
 // Add category
 const addCategory = async (req, res) => {
   try {
@@ -57,5 +67,6 @@ module.exports = {
   getAllCategories,
   addCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getAllCategories_UserPage
 };

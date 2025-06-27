@@ -9,11 +9,13 @@ const {
   addProduct,
   getAllProducts,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getAllProducts_User_Page
 } = require('../controllers/productController');
 
 productRouter.post('/addProduct', auth, upload.single('image'), addProduct);
 productRouter.get('/getAllProducts', auth, getAllProducts);
+productRouter.get('/getAllProducts_User_Page', getAllProducts_User_Page);
 productRouter.patch('/updateProduct/:id', auth, upload.single('image'), updateProduct);
 productRouter.delete('/deleteProduct/:id', auth, deleteProduct);
 
