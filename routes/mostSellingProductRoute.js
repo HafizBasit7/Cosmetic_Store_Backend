@@ -10,6 +10,7 @@ const {
   updateMostSalingProduct,
   deleteMostSalingProduct,
   getTopMostSalingProducts,
+  getTopMostSalingProducts_User
 } = require("../controllers/mostSellingProductController");
 mostSalingProductRouter.post(
   "/addMostSalingProduct",
@@ -32,6 +33,10 @@ mostSalingProductRouter.get(
   "/getTopMostSalingProduct",
   auth,
   getTopMostSalingProducts
+);
+mostSalingProductRouter.get(
+  "/getTopMostSalingProduct_User",
+  getTopMostSalingProducts_User
 );
 
 module.exports = mostSalingProductRouter;

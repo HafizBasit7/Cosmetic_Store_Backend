@@ -128,7 +128,50 @@ const getTopMostSalingProducts = async (req, res) => {
       },
       {
         $project: {
-          _id: 0,
+          _id: 1,
+          productName: "$name",
+          quantity: "$productQuantity",
+          image: "$image",
+          categoryName: "$categoryData.name",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      mostSalingProducts,
+    });
+  } catch (error) {
+    console.error("Aggregation Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+const getTopMostSalingProducts_User = async (req, res) => {
+  try {
+    const mostSalingProducts = await mostSalingProductModel.aggregate([
+      {
+        $sort: { productQuantity: -1 }, // Top by quantity
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $lookup: {
+          from: "categories", // collection name of Category (should match DB)
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "categoryData",
+        },
+      },
+      {
+        $unwind: "$categoryData",
+      },
+      {
+        $project: {
+          _id: 1,
           productName: "$name",
           quantity: "$productQuantity",
           image: "$image",
@@ -155,4 +198,5 @@ module.exports = {
   updateMostSalingProduct,
   deleteMostSalingProduct,
   getTopMostSalingProducts,
+  getTopMostSalingProducts_User
 };

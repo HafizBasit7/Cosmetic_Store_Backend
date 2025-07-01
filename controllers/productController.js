@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const mostSellingProductModel = require("../models/mostSellingProductModel");
 const Category = require('../models/categoryModel');
 const { uploadToCloud } = require('../utils/uploadToCloud');
 
@@ -81,10 +82,32 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getDashboardSummary = async (req, res) => {
+  try {
+    const totalProducts = await Product.countDocuments();
+    const mostSellingProducts = await mostSellingProductModel.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalProducts,
+        mostSellingProducts,
+      },
+    });
+  } catch (error) {
+    console.error("Dashboard Summary Error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching dashboard summary",
+    });
+  }
+};
+
 module.exports = {
   addProduct,
   getAllProducts,
   updateProduct,
   deleteProduct,
-  getAllProducts_User_Page
+  getAllProducts_User_Page,
+  getDashboardSummary
 };
