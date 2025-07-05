@@ -4,7 +4,7 @@ const { uploadToCloud } = require("../utils/uploadToCloud");
 // ADD a Most Selling Product
 const addMostSalingProduct = async (req, res) => {
   try {
-    const { name, productQuantity, categoryId, description } = req.body;
+    const { name, productQuantity, categoryId, description, price } = req.body;
     const existing = await mostSalingProductModel.findOne({ name });
 
     if (existing) {
@@ -34,6 +34,7 @@ const addMostSalingProduct = async (req, res) => {
       image: productImageUrl,
       categoryId,
       description,
+      price,
     });
 
     return res.status(201).json({
@@ -51,7 +52,7 @@ const addMostSalingProduct = async (req, res) => {
 const updateMostSalingProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, productQuantity, categoryId, description } = req.body;
+    const { name, productQuantity, categoryId, description, price } = req.body;
 
     const product = await mostSalingProductModel.findById(id);
     if (!product)
@@ -76,6 +77,7 @@ const updateMostSalingProduct = async (req, res) => {
     product.productQuantity = productQuantity || product.productQuantity;
     product.categoryId = categoryId || product.categoryId;
     product.description = description || product.description;
+    product.price = price || product.price;
 
     await product.save();
 
@@ -128,6 +130,7 @@ const getTopMostSalingProducts = async (req, res) => {
           quantity: "$productQuantity",
           image: "$image",
           description: "$description",
+          price: "$price", // ✅ Include price
           categoryName: "$categoryData.name",
         },
       },
@@ -168,6 +171,7 @@ const getTopMostSalingProducts_User = async (req, res) => {
           quantity: "$productQuantity",
           image: "$image",
           description: "$description",
+          price: "$price", // ✅ Include price
           categoryName: "$categoryData.name",
         },
       },

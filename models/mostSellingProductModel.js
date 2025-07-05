@@ -12,12 +12,17 @@ const mostSalingProductSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+      min: 0, // Optional: ensures price isn't negative
+    },
     image: String,
     description: {
       type: String,
-      required: true, // Set to true if every product must have a description
+      required: true,
       trim: true,
-      maxlength: 1000, // Optional: set a max length
+      maxlength: 1000,
     },
   },
   { timestamps: true }
