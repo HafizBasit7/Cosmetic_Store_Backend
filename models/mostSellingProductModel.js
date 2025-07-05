@@ -13,6 +13,12 @@ const mostSalingProductSchema = new mongoose.Schema(
       required: true,
     },
     image: String,
+    description: {
+      type: String,
+      required: true, // Set to true if every product must have a description
+      trim: true,
+      maxlength: 1000, // Optional: set a max length
+    },
   },
   { timestamps: true }
 );

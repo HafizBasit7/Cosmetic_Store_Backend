@@ -4,7 +4,7 @@ const { uploadToCloud } = require("../utils/uploadToCloud");
 // ADD a Most Selling Product
 const addMostSalingProduct = async (req, res) => {
   try {
-    const { name, productQuantity, categoryId } = req.body;
+    const { name, productQuantity, categoryId, description } = req.body;
     const existing = await mostSalingProductModel.findOne({ name });
 
     if (existing) {
@@ -33,6 +33,7 @@ const addMostSalingProduct = async (req, res) => {
       productQuantity,
       image: productImageUrl,
       categoryId,
+      description,
     });
 
     return res.status(201).json({
@@ -50,7 +51,7 @@ const addMostSalingProduct = async (req, res) => {
 const updateMostSalingProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, productQuantity, categoryId } = req.body;
+    const { name, productQuantity, categoryId, description } = req.body;
 
     const product = await mostSalingProductModel.findById(id);
     if (!product)
@@ -58,7 +59,6 @@ const updateMostSalingProduct = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Product not found" });
 
-    // Update image if file is uploaded
     if (req.file) {
       const result = await uploadToCloud(
         req.file.buffer,
@@ -75,6 +75,7 @@ const updateMostSalingProduct = async (req, res) => {
     product.name = name || product.name;
     product.productQuantity = productQuantity || product.productQuantity;
     product.categoryId = categoryId || product.categoryId;
+    product.description = description || product.description;
 
     await product.save();
 
@@ -105,33 +106,28 @@ const deleteMostSalingProduct = async (req, res) => {
   }
 };
 
-// GET Top 10 Most Selling Products
+// GET Top 10 Most Selling Products (Admin)
 const getTopMostSalingProducts = async (req, res) => {
   try {
     const mostSalingProducts = await mostSalingProductModel.aggregate([
-      {
-        $sort: { productQuantity: -1 }, // Top by quantity
-      },
-      {
-        $limit: 10,
-      },
+      { $sort: { productQuantity: -1 } },
+      { $limit: 10 },
       {
         $lookup: {
-          from: "categories", // collection name of Category (should match DB)
+          from: "categories",
           localField: "categoryId",
           foreignField: "_id",
           as: "categoryData",
         },
       },
-      {
-        $unwind: "$categoryData",
-      },
+      { $unwind: "$categoryData" },
       {
         $project: {
           _id: 1,
           productName: "$name",
           quantity: "$productQuantity",
           image: "$image",
+          description: "$description",
           categoryName: "$categoryData.name",
         },
       },
@@ -149,32 +145,29 @@ const getTopMostSalingProducts = async (req, res) => {
     });
   }
 };
+
+// GET Top 10 Most Selling Products (User)
 const getTopMostSalingProducts_User = async (req, res) => {
   try {
     const mostSalingProducts = await mostSalingProductModel.aggregate([
-      {
-        $sort: { productQuantity: -1 }, // Top by quantity
-      },
-      {
-        $limit: 10,
-      },
+      { $sort: { productQuantity: -1 } },
+      { $limit: 10 },
       {
         $lookup: {
-          from: "categories", // collection name of Category (should match DB)
+          from: "categories",
           localField: "categoryId",
           foreignField: "_id",
           as: "categoryData",
         },
       },
-      {
-        $unwind: "$categoryData",
-      },
+      { $unwind: "$categoryData" },
       {
         $project: {
           _id: 1,
           productName: "$name",
           quantity: "$productQuantity",
           image: "$image",
+          description: "$description",
           categoryName: "$categoryData.name",
         },
       },
@@ -198,5 +191,5 @@ module.exports = {
   updateMostSalingProduct,
   deleteMostSalingProduct,
   getTopMostSalingProducts,
-  getTopMostSalingProducts_User
+  getTopMostSalingProducts_User,
 };
